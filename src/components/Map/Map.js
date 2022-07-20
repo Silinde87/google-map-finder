@@ -1,9 +1,10 @@
 import { Status, Wrapper } from '@googlemaps/react-wrapper';
-import { useEffect, useState } from 'react';
+import Marker from '../Marker/Marker';
 import MapComponent from './MapComponent';
+import { useReactContext } from '../../context/Context';
 
 const Map = () => {
-  const [center, setCenter] = useState({ lat: 41.3879, lng: 2.16992 });
+  const { context } = useReactContext();
   const zoom = 11;
 
   const render = (status) => {
@@ -12,7 +13,11 @@ const Map = () => {
       case Status.LOADING:
         return <h1>{status}</h1>;
       default:
-        return <MapComponent center={center} zoom={zoom} />;
+        return (
+          <MapComponent center={context.center} zoom={zoom}>
+            <Marker position={context.markerPosition} />
+          </MapComponent>
+        );
     }
   };
 

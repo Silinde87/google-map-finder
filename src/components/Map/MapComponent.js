@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-const MapComponent = ({ center, zoom }) => {
+import { useEffect, useRef, useState, Children, isValidElement, cloneElement } from 'react';
+const MapComponent = ({ center, zoom, children }) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
 
@@ -9,7 +9,16 @@ const MapComponent = ({ center, zoom }) => {
     }
   }, [ref, map]);
 
-  return <div ref={ref} style={{ width: '100vw', height: '100vh' }} />;
+  return (
+    <>
+      <div ref={ref} style={{ width: '100vw', height: '100vh' }} />
+      {Children.map(children, (child) => {
+        if (isValidElement(child)) {
+          return cloneElement(child, { map });
+        }
+      })}
+    </>
+  );
 };
 
 export default MapComponent;
