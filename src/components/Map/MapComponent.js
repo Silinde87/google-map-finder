@@ -13,9 +13,7 @@ const MapComponent = ({ center, zoom, children }) => {
     <>
       <div ref={ref} style={{ width: '100vw', height: '100vh' }} />
       {Children.map(children, (child) => {
-        if (isValidElement(child)) {
-          return cloneElement(child, { map });
-        }
+        return isValidElement(child) && cloneElement(child, { map });
       })}
     </>
   );

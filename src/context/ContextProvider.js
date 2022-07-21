@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { ReactContext } from './Context';
 
+//markers is: { position: { lat: number, lng: number } }
 const initContext = {
   center: { lat: 41.3879, lng: 2.16992 },
-  markerPosition: null,
+  markers: [],
 };
 
 const ReactContextProvider = ({ children }) => {

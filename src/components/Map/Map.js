@@ -2,10 +2,19 @@ import { Status, Wrapper } from '@googlemaps/react-wrapper';
 import Marker from '../Marker/Marker';
 import MapComponent from './MapComponent';
 import { useReactContext } from '../../context/Context';
+import { useEffect } from 'react';
 
-const Map = () => {
-  const { context } = useReactContext();
-  const zoom = 11;
+const Map = ({ zoom = 11, center }) => {
+  const { context, setContext } = useReactContext();
+
+  useEffect(() => {
+    if (center) {
+      setContext((prevContext) => ({
+        ...prevContext,
+        center,
+      }));
+    }
+  }, [center]);
 
   const render = (status) => {
     switch (status) {
@@ -15,7 +24,9 @@ const Map = () => {
       default:
         return (
           <MapComponent center={context.center} zoom={zoom}>
-            <Marker position={context.markerPosition} />
+            {context.markers.map(({ position }, key) => (
+              <Marker key={key} position={position} />
+            ))}
           </MapComponent>
         );
     }
