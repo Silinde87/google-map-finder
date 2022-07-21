@@ -1,5 +1,7 @@
+import Map from '../../components/Map';
+
 function Home() {
-  return <div>React App Template</div>;
+  return <Map />;
 }
 
 export default Home;
