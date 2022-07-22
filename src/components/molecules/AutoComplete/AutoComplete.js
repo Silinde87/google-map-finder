@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { throttle } from 'lodash';
 import Input from '../../atoms/Input';
 import GoogleServices from './../../../services/GoogleServices';
+import { AutoCompleteWrapper, OptionsElement, OptionsWrapper } from './AutoComplete.styled';
 
 const autocompleteService = { current: null };
 
@@ -74,17 +75,19 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
 
   const renderItem = (item, key) => {
     return (
-      <p key={key} onClick={handleOnSelected}>
+      <OptionsElement key={key} onClick={handleOnSelected}>
         {item}
-      </p>
+      </OptionsElement>
     );
   };
 
   return (
-    <div data-testid={dataTestId}>
+    <AutoCompleteWrapper data-testid={dataTestId}>
       <Input onChange={handleOnChange} />
-      {isOptionListOpen && filteredOptions.map((item, key) => renderItem(item, key))}
-    </div>
+      {isOptionListOpen && filteredOptions.length > 0 && (
+        <OptionsWrapper>{filteredOptions.map((item, key) => renderItem(item, key))}</OptionsWrapper>
+      )}
+    </AutoCompleteWrapper>
   );
 };
 
