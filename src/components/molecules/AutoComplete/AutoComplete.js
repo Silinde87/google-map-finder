@@ -2,6 +2,7 @@ import { func, string } from 'prop-types';
 import { useEffect, useState, useMemo } from 'react';
 import { throttle } from 'lodash';
 import Input from '../../atoms/Input';
+import GoogleServices from './../../../services/GoogleServices';
 
 const autocompleteService = { current: null };
 
@@ -48,31 +49,11 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
     };
   }, [inputValue, googleMapsFetch]);
 
-  const getPlacesPostCodeById = async (selectedOption) =>
-    new Promise((resolve, reject) => {
-      const { place_id } = selectedOption;
-      if (!place_id) {
-        reject('placeId not provided');
-      }
-
-      try {
-        new window.google.maps.places.PlacesService(document.createElement('div')).getDetails(
-          {
-            placeId: place_id,
-            fields: ['address_components', 'geometry'],
-          },
-          (details) => resolve({ ...details, ...selectedOption })
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
-
   const handleOnSelected = (event) => {
     const option = event.target.innerText;
     let selectedOption = options?.[options.findIndex(({ description }) => option === description)];
 
-    getPlacesPostCodeById(selectedOption).then((result) => {
+    GoogleServices.getPlacesPostCodeById(selectedOption).then((result) => {
       const { location } = result.geometry;
       const center = { lat: location.lat(), lng: location.lng() };
       onSelected(center);

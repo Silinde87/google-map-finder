@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, Children, isValidElement, cloneElement } from 'react';
-import { string, number, object } from 'prop-types';
+import { string, number, object, array } from 'prop-types';
 
 const MapComponent = ({ dataTestId, center, zoom, children }) => {
   const ref = useRef(null);
@@ -31,7 +31,7 @@ MapComponent.propTypes = {
   dataTestId: string,
   zoom: number,
   center: object,
-  children: object,
+  children: array,
 };
 
 export default MapComponent;
