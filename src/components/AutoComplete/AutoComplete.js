@@ -75,6 +75,7 @@ const AutoComplete = () => {
   const handleOnSelected = (event) => {
     const option = event.target.innerText;
     let selectedOption = options?.[options.findIndex(({ description }) => option === description)];
+
     getPlacesPostCodeById(selectedOption).then((result) => {
       const { location } = result.geometry;
       const center = { lat: location.lat(), lng: location.lng() };

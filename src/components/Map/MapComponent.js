@@ -9,6 +9,12 @@ const MapComponent = ({ center, zoom, children }) => {
     }
   }, [ref, map]);
 
+  useEffect(() => {
+    if (ref.current && map) {
+      map.panTo(center);
+    }
+  }, [center]);
+
   return (
     <>
       <div ref={ref} style={{ width: '100vw', height: '100vh' }} />
