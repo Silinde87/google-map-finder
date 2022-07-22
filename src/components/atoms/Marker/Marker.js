@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { object } from 'prop-types';
 
 useEffect;
 const Marker = (options) => {
@@ -23,6 +24,10 @@ const Marker = (options) => {
   }, [marker, options]);
 
   return null;
+};
+
+Marker.propTypes = {
+  options: object,
 };
 
 export default Marker;

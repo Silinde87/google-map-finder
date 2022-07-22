@@ -1,12 +1,11 @@
+import { func, string } from 'prop-types';
 import { useEffect, useState, useMemo } from 'react';
-import { useReactContext } from '../../context/Context';
 import { throttle } from 'lodash';
+import Input from '../../atoms/Input';
 
 const autocompleteService = { current: null };
 
-const AutoComplete = () => {
-  const { setContext } = useReactContext();
-
+const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [isOptionListOpen, setIsOptionListOpen] = useState(false);
@@ -17,10 +16,7 @@ const AutoComplete = () => {
   const googleMapsFetch = useMemo(
     () =>
       throttle((request, callback) => {
-        autocompleteService.current.getPlacePredictions(
-          { ...request, componentRestrictions: { country: 'es' }, types: ['geocode'] },
-          callback
-        );
+        autocompleteService.current.getPlacePredictions({ ...request }, callback);
       }, 200),
     []
   );
@@ -67,8 +63,8 @@ const AutoComplete = () => {
           },
           (details) => resolve({ ...details, ...selectedOption })
         );
-      } catch (e) {
-        reject(e);
+      } catch (error) {
+        reject(error);
       }
     });
 
@@ -79,11 +75,7 @@ const AutoComplete = () => {
     getPlacesPostCodeById(selectedOption).then((result) => {
       const { location } = result.geometry;
       const center = { lat: location.lat(), lng: location.lng() };
-      setContext((prevContext) => ({
-        ...prevContext,
-        center,
-        markers: [{ position: center }],
-      }));
+      onSelected(center);
     });
     setIsOptionListOpen(false);
   };
@@ -108,11 +100,16 @@ const AutoComplete = () => {
   };
 
   return (
-    <>
-      <input onChange={handleOnChange} />
+    <div data-testid={dataTestId}>
+      <Input onChange={handleOnChange} />
       {isOptionListOpen && filteredOptions.map((item, key) => renderItem(item, key))}
-    </>
+    </div>
   );
+};
+
+AutoComplete.propTypes = {
+  dataTestId: string,
+  onSelected: func,
 };
 
 export default AutoComplete;
