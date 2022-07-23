@@ -1,21 +1,9 @@
 import { Status, Wrapper } from '@googlemaps/react-wrapper';
-import Marker from '../Marker/Marker';
+import { string, number, object, array } from 'prop-types';
+import Marker from '../Marker';
 import MapComponent from './MapComponent';
-import { useReactContext } from '../../context/Context';
-import { useEffect } from 'react';
 
-const Map = ({ zoom = 11, center }) => {
-  const { context, setContext } = useReactContext();
-
-  useEffect(() => {
-    if (center) {
-      setContext((prevContext) => ({
-        ...prevContext,
-        center,
-      }));
-    }
-  }, [center]);
-
+const Map = ({ dataTestId = 'map', zoom = 11, center, markers }) => {
   const render = (status) => {
     switch (status) {
       case Status.FAILURE:
@@ -23,8 +11,8 @@ const Map = ({ zoom = 11, center }) => {
         return <h1>{status}</h1>;
       default:
         return (
-          <MapComponent center={context.center} zoom={zoom}>
-            {context.markers.map(({ position }, key) => (
+          <MapComponent center={center} zoom={zoom} dataTestId={dataTestId}>
+            {markers.map(({ position }, key) => (
               <Marker key={key} position={position} />
             ))}
           </MapComponent>
@@ -33,6 +21,13 @@ const Map = ({ zoom = 11, center }) => {
   };
 
   return <Wrapper apiKey={process.env.REACT_APP_API_KEY} render={render} />;
+};
+
+Map.propTypes = {
+  dataTestId: string,
+  zoom: number,
+  center: object,
+  marker: array,
 };
 
 export default Map;
