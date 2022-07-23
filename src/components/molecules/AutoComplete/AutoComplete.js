@@ -85,7 +85,9 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
     <AutoCompleteWrapper data-testid={dataTestId}>
       <Input onChange={handleOnChange} />
       {isOptionListOpen && filteredOptions.length > 0 && (
-        <OptionsWrapper>{filteredOptions.map((item, key) => renderItem(item, key))}</OptionsWrapper>
+        <OptionsWrapper data-testid="options-wrapper">
+          {filteredOptions.map((item, key) => renderItem(item, key))}
+        </OptionsWrapper>
       )}
     </AutoCompleteWrapper>
   );
