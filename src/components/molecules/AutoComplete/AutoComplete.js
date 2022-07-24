@@ -51,8 +51,8 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
   }, [inputValue, googleMapsFetch]);
 
   const handleOnSelected = (event) => {
-    const option = event.target.innerText;
-    let selectedOption = options?.[options.findIndex(({ description }) => option === description)];
+    const { option } = event.target.dataset;
+    let selectedOption = options.find(({ description }) => description === option);
 
     GoogleServices.getPlacesPostCodeById(selectedOption).then((result) => {
       const { location } = result.geometry;
@@ -75,10 +75,19 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
 
   const renderItem = (item, key) => {
     return (
-      <OptionsElement key={key} onClick={handleOnSelected}>
-        {item}
+      <OptionsElement key={key} onClick={handleOnSelected} data-option={item}>
+        {highlightedText(item)}
       </OptionsElement>
     );
+  };
+
+  const highlightedText = (text) => {
+    const regex = new RegExp(inputValue, 'gi');
+    let highlightText = text.replace(
+      regex,
+      `<span data-option="${text}" style="font-weight: 600">${inputValue}</span>`
+    );
+    return <span data-option={text} dangerouslySetInnerHTML={{ __html: highlightText }} />;
   };
 
   return (
