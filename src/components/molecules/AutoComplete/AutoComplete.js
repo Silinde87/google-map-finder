@@ -11,9 +11,6 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [isOptionListOpen, setIsOptionListOpen] = useState(false);
-  const filteredOptions = options
-    ?.map(({ description }) => description)
-    .filter((option) => option !== null && option !== undefined);
 
   const googleMapsFetch = useMemo(
     () =>
@@ -24,8 +21,6 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
   );
 
   useEffect(() => {
-    let isActive = true;
-
     if (!autocompleteService.current && window.google) {
       autocompleteService.current = new window.google.maps.places.AutocompleteService();
     }
@@ -34,20 +29,14 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
     }
 
     googleMapsFetch({ input: inputValue }, (results) => {
-      if (isActive) {
-        let newOptions = [];
+      let newOptions = [];
 
-        if (results) {
-          newOptions = [...newOptions, ...results];
-        }
-
-        setOptions(newOptions);
+      if (results) {
+        newOptions = [...newOptions, ...results];
       }
-    });
 
-    return () => {
-      isActive = false;
-    };
+      setOptions(newOptions);
+    });
   }, [inputValue, googleMapsFetch]);
 
   const handleOnSelected = (event) => {
@@ -64,11 +53,6 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
 
   const handleOnChange = (event) => {
     const { value } = event.target;
-    if (value === '') {
-      setOptions([]);
-    } else {
-      setOptions(value ? [value, ...options] : options);
-    }
     setInputValue(value);
     setIsOptionListOpen(true);
   };
@@ -93,9 +77,9 @@ const AutoComplete = ({ dataTestId = 'autocomplete', onSelected }) => {
   return (
     <AutoCompleteWrapper data-testid={dataTestId}>
       <Input onChange={handleOnChange} />
-      {isOptionListOpen && filteredOptions.length > 0 && (
+      {isOptionListOpen && options.length > 0 && (
         <OptionsWrapper data-testid="options-wrapper">
-          {filteredOptions.map((item, key) => renderItem(item, key))}
+          {options.map((item, key) => renderItem(item.description, key))}
         </OptionsWrapper>
       )}
     </AutoCompleteWrapper>
